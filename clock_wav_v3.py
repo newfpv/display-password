@@ -39,7 +39,7 @@ class PwnClock(plugins.Plugin):
                         memenable = True
                         logging.info(
                             "Pwnagotchi Clock Plugin: memtemp is enabled")
-        if ui.is_waveshare_v3():
+        if ui.is_waveshare_v3() or ui.is_waveshare_v4():
             pos = (130, 80) if memenable else (200, 80)
             ui.add_element('clock', LabeledValue(color=BLACK, label='', value='-/-/-\n-:--',
                                                  position=pos,

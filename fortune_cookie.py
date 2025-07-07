@@ -8,8 +8,8 @@ import random
 
 
 class FortuneCookiePlugin(plugins.Plugin):
-    __author__ = '@vanshksingh'
-    __version__ = '1.0.0'
+    __author__ = '@vanshksingh and @avipars'
+    __version__ = '1.0.1'
     __license__ = 'GPL3'
     __description__ = 'A plugin to display fortune cookie messages'
 
@@ -17,11 +17,7 @@ class FortuneCookiePlugin(plugins.Plugin):
         logging.info("FortuneCookiePlugin loaded")
 
     def on_ui_setup(self, ui):
-        if ui.is_waveshare_v2():
-            position = (0, 95)
-        elif ui.is_waveshare_v3():
-            position = (0, 95)
-        elif ui.is_waveshare_v1():
+        if ui.is_waveshare_v1() or ui.is_waveshare_v2() or ui.is_waveshare_v3() or ui.is_waveshare_v4():
             position = (0, 95)
         elif ui.is_waveshare144lcd():
             position = (0, 92)

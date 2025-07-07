@@ -16,19 +16,20 @@ import os
 
 
 class DisplayPassword(plugins.Plugin):
-    __author__ = '@vanshksingh'
-    __version__ = '1.0.0'
+    __author__ = '@vanshksingh and @avipars'
+    __version__ = '1.0.1'
     __license__ = 'GPL3'
+    __name__ = "DisplayPassword"
     __description__ = 'A plugin to display recently cracked passwords'
-
+    __defaults__ = {
+        "enabled": False,
+    }
+    
     def on_loaded(self):
         logging.info("display-password loaded")
 
     def on_ui_setup(self, ui):
-        if ui.is_waveshare_v2():
-            h_pos = (0, 95)
-            v_pos = (180, 61)
-        elif ui.is_waveshare_v3():
+        if ui.is_waveshare_v2() or ui.is_waveshare_v3() or ui.is_waveshare_v4():
             h_pos = (0, 95)
             v_pos = (180, 61)  
         elif ui.is_waveshare_v1():

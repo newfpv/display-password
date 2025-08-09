@@ -74,4 +74,3 @@ Looking for a case to protect and house your Pwnagotchi device? Check out the ca
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
----

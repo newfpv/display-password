@@ -4,9 +4,9 @@
 Мощный, полностью переработанный плагин для отображения недавно взломанных паролей прямо на e-ink экране вашего Pwnagotchi.  
 Поддерживает несколько источников, умную сортировку по времени, интеграцию с better_quickdic и современные дисплеи без поломки интерфейса.
 
-[🇬🇧 View in English](https://github.com/Newfpv/DisplayPassword/blob/main/README.md)
+[🇬🇧 View in English](https://github.com/Newfpv/display-password/blob/main/README.md)
 
-![image](https://github.com/Newfpv/DisplayPassword/blob/main/image.webp)
+![image](https://github.com/Newfpv/display-password/blob/main/image.webp)
 
 ## ⚡ Главные отличия от оригинала
 Этот форк — глубокий рефакторинг кода `@nagy_craig` и `@vanshksingh`:
@@ -25,7 +25,7 @@
 ```bash
 ssh pi@10.0.0.2
 cd /usr/local/share/pwnagotchi/custom-plugins/
-sudo wget [https://raw.githubusercontent.com/Newfpv/DisplayPassword/main/display-password.py](https://raw.githubusercontent.com/Newfpv/DisplayPassword/main/display-password.py)
+sudo wget [https://raw.githubusercontent.com/Newfpv/display-password/main/display-password.py](https://raw.githubusercontent.com/Newfpv/display-password/main/display-password.py)
 sudo nano /etc/pwnagotchi/config.toml
 ```
 

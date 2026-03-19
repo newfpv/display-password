@@ -38,6 +38,7 @@ main.plugins.display-password.orientation = "horizontal"
 main.plugins.display-password.wpa_sec = true
 main.plugins.display-password.ohc = true
 main.plugins.display-password.better_quickdic = true
+main.plugins.display-password.orientation = "horizontal"
 
 # Лимит символов на экране до обрезки
 main.plugins.display-password.max_length = 22

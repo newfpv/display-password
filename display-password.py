@@ -9,7 +9,7 @@ import glob
 
 class DisplayPassword(plugins.Plugin):
     __author__ = '@vanshksingh (Modified by NewFPV)'
-    __version__ = '2.0.0'
+    __version__ = '2.0.1'
     __license__ = 'GPL3'
     __description__ = 'Displays recently cracked passwords from wpa-sec, OHC and better_quickdic'
 
@@ -26,32 +26,32 @@ class DisplayPassword(plugins.Plugin):
         logging.info("display-password loaded")
 
     def on_ui_setup(self, ui):
-        if ui.is_waveshare_v2():
+        is_v2 = getattr(ui, 'is_waveshare_v2', lambda: False)()
+        is_v3 = getattr(ui, 'is_waveshare_v3', lambda: False)()
+        is_v4 = getattr(ui, 'is_waveshare_v4', lambda: False)()
+
+        if is_v2 or is_v3 or is_v4:
             h_pos = (0, 95)
             v_pos = (180, 61)
-        elif ui.is_waveshare_v4():
-            h_pos = (0, 95)
-            v_pos = (180, 61)
-        elif ui.is_waveshare_v3():
-            h_pos = (0, 95)
-            v_pos = (180, 61)  
-        elif ui.is_waveshare_v1():
+        elif getattr(ui, 'is_waveshare_v1', lambda: False)():
             h_pos = (0, 95)
             v_pos = (170, 61)
-        elif ui.is_waveshare144lcd():
+        elif getattr(ui, 'is_waveshare144lcd', lambda: False)():
             h_pos = (0, 92)
             v_pos = (78, 67)
-        elif ui.is_inky():
+        elif getattr(ui, 'is_inky', lambda: False)():
             h_pos = (0, 83)
             v_pos = (165, 54)
-        elif ui.is_waveshare27inch():
+        elif getattr(ui, 'is_waveshare27inch', lambda: False)():
             h_pos = (0, 153)
             v_pos = (216, 122)
         else:
             h_pos = (0, 91)
             v_pos = (180, 61)
 
-        if self.options['orientation'] == "vertical":
+        orientation = self.options.get('orientation', 'horizontal')
+
+        if orientation == "vertical":
             ui.add_element('display-password', LabeledValue(color=BLACK, label='', value='',
                                                    position=v_pos,
                                                    label_font=fonts.Bold, text_font=fonts.Small))
@@ -130,6 +130,7 @@ class DisplayPassword(plugins.Plugin):
                     found_any = True
             except Exception as e:
                 logging.debug(f"DisplayPassword Error reading quickdic file {q_file}: {e}")
+
         if not found_any:
             ui.set('display-password', 'No cracked passwords')
         else:

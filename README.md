@@ -44,7 +44,7 @@ If a cracked password or ESSID is exceptionally long, the plugin safely truncate
 
 ## 🤝 Acknowledgments
 - **@nagy_craig**, **@vanshksingh**, and **@avipars** — for the original idea and base code of the plugin.
-- **NewFPV** (and contributors) — for the complete architecture rework, better_quickdic support, and mtime sorting algorithm.
+- **NewFPV** — for the complete architecture rework, better_quickdic support, and mtime sorting algorithm.
 
 ## 📝 License
 This project is licensed under the GPL3 License.

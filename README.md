@@ -1,76 +1,53 @@
+# Display Password (Advanced Fork)  
+**Ultimate Cracked Password Aggregator for Pwnagotchi**
 
+A powerful, fully reworked plugin to display recently cracked passwords directly on your Pwnagotchi's e-ink screen.  
+Supports multiple sources, smart time-based sorting, better_quickdic integration, and modern displays without breaking your UI.
 
-# Pwnagotchi Plugins for V4 Display
+[🇷🇺 Перевести на русский язык](https://github.com/Newfpv/display-password/blob/main/READMERU.md)
 
-![IMG_3302](https://github.com/vanshksingh/Pwnagotchi_Plugins/assets/114809624/9522b5ae-37c1-4c08-8e66-f99d2e10edf0)
+![image](https://github.com/Newfpv/display-password/blob/main/image.webp)
 
+## ✨ Features
+- **Multi-Source Aggregation:** automatically scans multiple databases including `wpa-sec`, `onlinehashcrack` (OHC), and local bruteforce files (`*.pcap.cracked`) from **better_quickdic**.
+- **Smart Selection (mtime):** compares file modification times to *always* display the absolute newest cracked password, regardless of the tool used.
+- **better_quickdic Support:** intelligently extracts the ESSID directly from the filename (e.g., `MyWiFi_AA:BB:CC:DD.pcap.cracked`) since the file only contains the password.
+- **Modern Display Support:** fully compatible with Waveshare v3, Waveshare v4, and standard e-ink displays.
+- **Pure Python Parsing:** completely removed unstable `awk` and `tail` bash pipelines in favor of native Python processing for lower CPU usage and higher stability.
+- **Clean UI:** no more ugly tracebacks (`Error: file not found...`) ruining your e-ink layout. Shows a clean "No cracked passwords" if databases are empty.
+- **Modern Firmware Paths:** natively searches both `/root/handshakes/` and `/home/pi/handshakes/` (perfect for Jayofelony / Aluminum-Ice images).
 
-https://www.reddit.com/r/pwnagotchi/s/kpSe5CslQX
+## 🚀 Installation
+```bash
+ssh pi@10.0.0.2
+cd /usr/local/share/pwnagotchi/custom-plugins/
+sudo wget [https://raw.githubusercontent.com/Newfpv/display-password/main/display-password.py](https://raw.githubusercontent.com/Newfpv/display-password/main/display-password.py)
+sudo nano /etc/pwnagotchi/config.toml
+```
+Add plugin config:
+```toml
+main.plugins.display-password.enabled = true
+# Optional: text output orientation (horizontal by default)
+main.plugins.display-password.orientation = "horizontal"
+```
+Restart:
+```bash
+sudo systemctl restart pwnagotchi
+```
 
+## 🛠 Troubleshooting
+### "No cracked passwords" is stuck on screen
+Ensure your handshakes or `.potfile`s are located in `/root/handshakes/` or `/home/pi/handshakes/`. The plugin checks these directories automatically. 
 
-Welcome to the repository for edited plugins for Pwnagotchi, specifically designed to work seamlessly with a V4 display. These plugins enhance the functionality and display capabilities of your Pwnagotchi device.
+### UI Layout is Broken / Text Overflow
+If a cracked password or ESSID is exceptionally long, the plugin safely truncates it to prevent breaking the e-ink screen layout.
 
-## Table of Contents
+## 🤝 Acknowledgments
+- **@nagy_craig**, **@vanshksingh**, and **@avipars** — for the original idea and base code of the plugin.
+- **NewFPV** (and contributors) — for the complete architecture rework, better_quickdic support, and mtime sorting algorithm.
 
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Plugins](#plugins)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [Cases](#cases)
-- [License](#license)
+## 📝 License
+This project is licensed under the GPL3 License.
 
-## Overview
-
-This repository contains a collection of plugins modified to work with a V4 display on your Pwnagotchi device. These plugins allow you to customize your Pwnagotchi's behavior and display to suit your preferences and needs.
-
-## Requirements
-
-- Pwnagotchi device with Pwnagotchi software installed.
-- V4 display compatible with your Pwnagotchi device.
-- Basic knowledge of terminal commands and editing configuration files.
-
-## Installation
-
-1. Clone this repository to your local machine:
-    ```shell
-    git clone [repository-url]
-    ```
-
-2. Copy the plugins you want to use into your Pwnagotchi's plugin directory, typically located at:
-    ```shell
-    /etc/pwnagotchi/plugins/
-    ```
-
-3. Enable the plugins in your Pwnagotchi's configuration file. Open the file located at `/etc/pwnagotchi/config.toml` and add the plugin under the `[plugins]` section. For example:
-    ```toml
-    [plugins]
-    my_plugin = {
-        enabled = true,
-        # additional configuration options
-    }
-    ```
-
-4. Save the configuration file and restart your Pwnagotchi device for the changes to take effect.
-
-## Plugins
-
-- **Plugin Name**: Brief description of what the plugin does and how it can enhance your Pwnagotchi experience.
-
-## Usage
-
-After installing the plugins and restarting your Pwnagotchi device, you should see the effects of the plugins on your V4 display. Refer to the individual plugin documentation for specific instructions on usage.
-
-## Contributing
-
-If you have ideas for improvements or new plugins, feel free to fork the repository, make your changes, and submit a pull request. Your contributions are welcome!
-
-## Cases
-
-Looking for a case to protect and house your Pwnagotchi device? Check out the cases [[here](link-to-cases)](https://www.thingiverse.com/thing:6591204). These cases are designed specifically for Pwnagotchi and offer a perfect fit and protection for your device.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
+## ☕ Support
+<div align="left"><a href="https://www.donationalerts.com/r/newfpv"><img src="https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-yellow.svg" alt="Donate"></a></div>

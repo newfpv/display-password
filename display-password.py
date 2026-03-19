@@ -9,9 +9,18 @@ import glob
 
 class DisplayPassword(plugins.Plugin):
     __author__ = '@vanshksingh (Modified by NewFPV)'
-    __version__ = '1.0.0'
+    __version__ = '2.0.0'
     __license__ = 'GPL3'
     __description__ = 'Displays recently cracked passwords from wpa-sec, OHC and better_quickdic'
+
+    __defaults__ = {
+        'enabled': False,
+        'orientation': 'horizontal',
+        'wpa_sec': True,
+        'ohc': True,
+        'better_quickdic': True,
+        'max_length': 22
+    }
 
     def on_loaded(self):
         logging.info("display-password loaded")
@@ -56,86 +65,82 @@ class DisplayPassword(plugins.Plugin):
             ui.remove_element('display-password')
 
     def on_ui_update(self, ui):
-        # 1. Сначала проверяем стандартные pot-файлы (wpa-sec, OHC)
-        potfiles = [
-            '/root/handshakes/wpa-sec.cracked.potfile',
-            '/root/handshakes/onlinehashcrack.cracked.potfile',
-            '/home/pi/handshakes/wpa-sec.cracked.potfile'
-        ]
+        potfiles = []
+        if self.options.get('wpa_sec', True):
+            potfiles.extend([
+                '/root/handshakes/wpa-sec.cracked.potfile',
+                '/home/pi/handshakes/wpa-sec.cracked.potfile'
+            ])
+            
+        if self.options.get('ohc', True):
+            potfiles.append('/root/handshakes/onlinehashcrack.cracked.potfile')
         
-        # 2. Ищем файлы от better_quickdic (*.pcap.cracked)
-        # Они лежат там же, где и handshakes
-        handshake_dirs = ['/root/handshakes/', '/home/pi/handshakes/']
         quickdic_files = []
-        for d in handshake_dirs:
-            if os.path.exists(d):
-                quickdic_files.extend(glob.glob(os.path.join(d, '*.pcap.cracked')))
+        if self.options.get('better_quickdic', True):
+            handshake_dirs = ['/root/handshakes/', '/home/pi/handshakes/']
+            for d in handshake_dirs:
+                if os.path.exists(d):
+                    quickdic_files.extend(glob.glob(os.path.join(d, '*.pcap.cracked')))
 
-        last_cracked = ""
+        last_essid = ""
+        last_pwd = ""
         last_timestamp = 0
         found_any = False
 
-        # --- Обработка стандартных potfiles ---
         for p_file in potfiles:
             if os.path.exists(p_file):
                 try:
                     mtime = os.path.getmtime(p_file)
-                    # Читаем последнюю строку
                     line = os.popen(f'tail -n 1 {p_file}').read().strip()
                     if line:
                         parts = line.split(':')
                         if len(parts) >= 3:
                             pwd = parts[-1]
                             essid = parts[-2]
-                            display_str = f"{essid}:{pwd}"
                             
                             if mtime > last_timestamp:
                                 last_timestamp = mtime
-                                last_cracked = display_str
+                                last_essid = essid
+                                last_pwd = pwd
                                 found_any = True
                 except Exception as e:
                     logging.debug(f"DisplayPassword Error reading {p_file}: {e}")
 
-        # --- Обработка файлов better_quickdic ---
         for q_file in quickdic_files:
             try:
                 mtime = os.path.getmtime(q_file)
-                # Если этот файл старее, чем то, что мы уже нашли, пропускаем чтение (оптимизация)
                 if mtime <= last_timestamp:
                     continue
 
-                # Quickdic пишет только пароль внутрь файла
                 with open(q_file, 'r') as f:
                     pwd = f.read().strip()
                 
                 if pwd:
-                    # Имя файла обычно: ESSID_MAC.pcap.cracked
-                    # Нам нужно вытащить ESSID из имени файла
                     filename = os.path.basename(q_file)
-                    # Убираем расширение
                     name_no_ext = filename.replace('.pcap.cracked', '')
-                    
-                    # Разбиваем по подчеркиванию. Последняя часть - это MAC, всё до неё - ESSID
                     parts = name_no_ext.split('_')
                     if len(parts) > 1:
-                        essid = "_".join(parts[:-1]) # Собираем обратно, если в ESSID были подчеркивания
+                        essid = "_".join(parts[:-1])
                     else:
-                        essid = name_no_ext # На всякий случай
-
-                    display_str = f"{essid}:{pwd}"
+                        essid = name_no_ext
                     
                     last_timestamp = mtime
-                    last_cracked = display_str
+                    last_essid = essid
+                    last_pwd = pwd
                     found_any = True
             except Exception as e:
                 logging.debug(f"DisplayPassword Error reading quickdic file {q_file}: {e}")
-
         if not found_any:
             ui.set('display-password', 'No cracked passwords')
         else:
-            # Обрезаем строку, если она слишком длинная для экрана
-            if len(last_cracked) > 20: 
-                 # Показываем начало ESSID и пароль
-                 # (можно настроить под себя)
-                 pass
-            ui.set('display-password', last_cracked)
+            max_len = self.options.get('max_length', 22)
+            display_str = f"{last_essid}:{last_pwd}"
+            
+            if len(display_str) > max_len:
+                avail_len = max_len - len(last_pwd) - 2
+                if avail_len > 0:
+                    display_str = f"{last_essid[:avail_len]}.:{last_pwd}"
+                else:
+                    display_str = f"{last_essid[:1]}.:{last_pwd[:max_len-4]}."
+            
+            ui.set('display-password', display_str)
